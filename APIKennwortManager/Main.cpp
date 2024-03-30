@@ -1,66 +1,109 @@
+#define CPPHTTPLIB_OPENSSL_SUPPORT
+
 #include <httplib.h>
 #include <iostream>
+#include <fstream>
+#include <string>
+
+#include "Crypto.h"
+#include "PostgreSQLCleint.h"
 
 int main(void)
 {
     using namespace httplib;
 
-    Server svr;
+    httplib::Server svr;
+
+    std::fstream new_file;
+    new_file.open("Files/DB_Connection.txt", std::ios::in);
+    std::string connectionString;
+    if (new_file.is_open()) {
+        getline(new_file, connectionString);
+        std::cout << connectionString << "\n";
+        new_file.close();
+    }
+    else
+    {
+        std::cout << "Could not Open DB_Connection.txt" << std::endl;
+    }
+
+    PostgreSQLCleint postgreSQLCleint = PostgreSQLCleint(connectionString);
 
     svr.Get("/hi", [](const Request& req, Response& res) {
         res.set_content("Hello World!", "text/plain");
         std::cout << "get req" << std::endl;
         });
 
-    // Match the request path against a regular expression
-    // and extract its captures
-    svr.Get(R"(/numbers/(\d+))", [&](const Request& req, Response& res) {
-        auto numbers = req.matches[1];
-        res.set_content(numbers, "text/plain");
-        });
-
-    // Capture the second segment of the request path as "id" path param
-    svr.Get("/users/:id", [&](const Request& req, Response& res) {
-        auto user_id = req.path_params.at("id");
-        res.set_content(user_id, "text/plain");
-        });
-
-    // Extract values from HTTP headers and URL query params
-    svr.Get("/body-header-param", [](const Request& req, Response& res) {
-        if (req.has_header("Content-Length")) {
-            auto val = req.get_header_value("Content-Length");
+    svr.Get("/login", [&](const Request& req, Response& res) {
+        std::vector<std::string> keys{ "user_identity", "pass" };
+        std::vector<std::string> values{
+            req.get_param_value("identity"),
+            Crypto::Hash2_SHA256(req.get_param_value("password"), 1000, req.get_param_value("identity"))
+        };
+        std::string msg = "succes";
+        if (!postgreSQLCleint._exists("master_accounts", keys, values))
+        {
+            msg = "error";
         }
-        if (req.has_param("key")) {
-            auto val = req.get_param_value("key");
-        }
-        res.set_content(req.body, "text/plain");
+        res.set_content(msg, "text/plain");
         });
 
-    svr.Get("/stop", [&](const Request& req, Response& res) {
-        svr.stop();
+    svr.Get("/getSavedAccounts", [&](const Request& req, Response& res) {      
+        std::vector<std::string> keys{ "master_account_identity" };
+        std::vector<std::string> values{ Crypto::Hash2_SHA256(req.get_param_value("master_account_identity"), 1000, req.get_param_value("master_account_identity")) };
+        std::string msg = postgreSQLCleint.getByName("saved_accounts", keys, values);
+        res.set_content(msg, "text/plain");
         });
 
-    svr.Post("/post", [](const Request& req, Response& res) {
-        res.set_content(req.body, "text/plain");
-        std::cout << "post req" << std::endl;
+    svr.Post("/signUp", [&](const auto& req, auto& res) {
+        std::vector<std::string> keys{ "user_identity", "pass" };
+        std::vector<std::string> values{
+            req.get_file_value("identity").content,
+            Crypto::Hash2_SHA256(req.get_file_value("password").content, 1000, req.get_file_value("identity").content)
+        };
+        std::string msg = postgreSQLCleint.insert("master_accounts", keys, values);
+        res.set_content(msg, "text/plain");
         });
 
-    svr.Post("/multipart", [&](const auto& req, auto& res) {
-        auto size = req.files.size();
-        auto ret = req.has_file("name");
-        const auto& file = req.get_file_value("name");
-        std::cout << file.filename << std::endl;
-        std::cout << file.content_type << std::endl;
-        std::cout << file.content << std::endl;
-        auto ret2 = req.has_file("age");
-        const auto& file2 = req.get_file_value("age");
-        std::cout << file2.filename << std::endl;
-        std::cout << file2.content_type << std::endl;
-        std::cout << file2.content << std::endl;
-        res.set_content("Post Succesful", "text/plain");
-        // file.filename;
-        // file.content_type;
-        // file.content;
+    svr.Post("/addAccount", [&](const auto& req, auto& res) {
+        std::vector<std::string> keys{ "master_account_identity", "platform", "saved_account_identity", "pass", "created_at", "updated_at", "salt" };
+        std::vector<std::string> values{ 
+            Crypto::Hash2_SHA256(req.get_file_value("master_account_identity").content, 1000, req.get_file_value("master_account_identity").content),
+            req.get_file_value("platform").content,
+            req.get_file_value("saved_account_identity").content,
+            req.get_file_value("pass").content,
+            req.get_file_value("created_at").content,
+            req.get_file_value("updated_at").content,
+            req.get_file_value("salt").content
+        };
+        std::string msg = postgreSQLCleint.insertAndReturnId("saved_accounts", keys, values, "saved_account_id");
+        res.set_content(msg, "text/plain");
+        });
+
+    svr.Post("/updateAccount", [&](const auto& req, auto& res) {
+        std::vector<std::string> keys{ "saved_account_id", "master_account_identity", "platform", "saved_account_identity", "pass", "created_at", "updated_at", "salt" };
+        std::vector<std::string> values{
+            req.get_file_value("saved_account_id").content,
+            Crypto::Hash2_SHA256(req.get_file_value("master_account_identity").content, 1000, req.get_file_value("master_account_identity").content),
+            req.get_file_value("platform").content,
+            req.get_file_value("saved_account_identity").content,
+            req.get_file_value("pass").content,
+            req.get_file_value("created_at").content,
+            req.get_file_value("updated_at").content,
+            req.get_file_value("salt").content
+        };
+        std::string msg = postgreSQLCleint.updateById("saved_accounts", keys, values, 0);
+        res.set_content(msg, "text/plain");
+        });
+
+    svr.Post("/deleteAccount", [&](const auto& req, auto& res) {
+        std::vector<std::string> keys{ "saved_account_id", "master_account_identity" };
+        std::vector<std::string> values{
+            req.get_file_value("saved_account_id").content,
+            Crypto::Hash2_SHA256(req.get_file_value("master_account_identity").content, 1000, req.get_file_value("master_account_identity").content),
+        };
+        std::string msg = postgreSQLCleint.deleteByValues("saved_accounts", keys, values);
+        res.set_content(msg, "text/plain");
         });
 
     svr.listen("localhost", 1234);

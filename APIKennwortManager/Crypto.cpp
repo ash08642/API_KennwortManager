@@ -52,6 +52,72 @@ std::string Crypto::Hash_SHA256(const std::string plain_text, int iterations, st
     return charToHexString(digest, digest_len);
 }
 
+std::string Crypto::Hash2_SHA256(const std::string plain_text, int iterations, std::string salt)
+{
+    std::string theString = plain_text + salt;
+    std::string shaString;
+
+    unsigned char* digest_buffer = new unsigned char[EVP_MD_size(EVP_sha256())];
+    unsigned int digest_bbuffer_len = EVP_MD_size(EVP_sha256());
+
+    EVP_MD_CTX* context = EVP_MD_CTX_create();
+    EVP_MD_CTX_init(context);
+    if (!context)
+    {
+        return "error in context";
+    }
+    EVP_MD* type = (EVP_MD*)EVP_sha256();
+    if (!EVP_DigestInit_ex(context, type, NULL))
+    {
+        return "error init";
+    }
+
+    if (!EVP_DigestUpdate(context, theString.c_str(), theString.length()))
+    {
+        return "error update";
+    }
+    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned int lengthOfHash = 0;
+
+    if (!EVP_DigestFinal_ex(context, hash, &lengthOfHash))
+    {
+        return "error final";
+    }
+    //EVP_MD_CTX_free(context);
+
+    for (size_t i = 1; i < iterations; i++)
+    {
+        memcpy(&digest_buffer[0], &hash[0], digest_bbuffer_len * sizeof(unsigned char));
+
+        if (!EVP_DigestInit_ex(context, type, NULL))
+        {
+            return "error init";
+        }
+
+        if (!EVP_DigestUpdate(context, digest_buffer, digest_bbuffer_len))
+        {
+            return "error update";
+        }
+
+        if (!EVP_DigestFinal_ex(context, hash, &lengthOfHash))
+        {
+            return "error final";
+        }
+    }
+    delete[] digest_buffer;
+    std::stringstream ss;
+    for (unsigned int i = 0; i < lengthOfHash; ++i)
+    {
+        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+    }
+
+    shaString = ss.str();
+
+    EVP_MD_CTX_free(context);
+
+    return charToHexString(hash, lengthOfHash);
+}
+
 void Crypto::PBKDF2_derive_key_iv(
     const std::string& pass, const std::string& salt,
     unsigned char* key, unsigned int key_len,

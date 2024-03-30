@@ -1,0 +1,1 @@
+postgres://manager:k0aV1eBkHlYzdKdCrTwmyP9k4eUMLA40@dpg-co3jj64f7o1s738ier2g-a.frankfurt-postgres.render.com/passwordmanager_r5to
