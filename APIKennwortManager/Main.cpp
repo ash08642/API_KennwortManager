@@ -10,8 +10,6 @@
 
 int main(void)
 {
-    using namespace httplib;
-
     httplib::Server svr;
 
     std::fstream new_file;
@@ -29,12 +27,12 @@ int main(void)
 
     PostgreSQLCleint postgreSQLCleint = PostgreSQLCleint(connectionString);
 
-    svr.Get("/hi", [](const Request& req, Response& res) {
+    svr.Get("/hi", [](const  httplib::Request& req, httplib::Response& res) {
         res.set_content("Hello World!", "text/plain");
         std::cout << "get req" << std::endl;
         });
 
-    svr.Get("/login", [&](const Request& req, Response& res) {
+    svr.Get("/login", [&](const  httplib::Request& req, httplib::Response& res) {
         std::vector<std::string> keys{ "user_identity", "pass" };
         std::vector<std::string> values{
             req.get_param_value("identity"),
@@ -48,7 +46,7 @@ int main(void)
         res.set_content(msg, "text/plain");
         });
 
-    svr.Get("/getSavedAccounts", [&](const Request& req, Response& res) {      
+    svr.Get("/getSavedAccounts", [&](const  httplib::Request& req, httplib::Response& res) {
         std::vector<std::string> keys{ "master_account_identity" };
         std::vector<std::string> values{ Crypto::Hash2_SHA256(req.get_param_value("master_account_identity"), 1000, req.get_param_value("master_account_identity")) };
         std::string msg = postgreSQLCleint.getByName("saved_accounts", keys, values);

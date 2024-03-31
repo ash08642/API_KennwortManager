@@ -1,1 +1,9 @@
 postgres://manager:k0aV1eBkHlYzdKdCrTwmyP9k4eUMLA40@dpg-co3jj64f7o1s738ier2g-a.frankfurt-postgres.render.com/passwordmanager_r5to
+
+##Beispiele Connection-String Muster für verbindung mit local postgres DB:
+host=localhost port=5432 dbname=passwordmanager user=postgres password =123qwe123qw
+
+##Ersetzen Sie die erste Zeile durch eine neue Connection-String, wenn 
+##Sie die Datenbank ändern möchten. Das Programm wird nur die erste Zeile lesen. 
+##Vergewissern Sie sich, dass die Datenbank bereits angelegt ist. Die Tabellen 
+##werden vom Programm automatisch erstellt, wenn sie nicht vorhanden sind.

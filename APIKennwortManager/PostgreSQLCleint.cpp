@@ -6,13 +6,6 @@ PostgreSQLCleint::PostgreSQLCleint(std::string connectionString)
 
 	initializeTables();
 
-	pqxx::work txn{ *connection };
-	pqxx::result r = txn.exec("SELECT * FROM master_accounts");
-	for (auto const& row : r)
-	{
-		for (auto const& field : row) std::cout << field.c_str() << '\t';
-		std::cout << std::endl;
-	}
 	std::cout << connection->dbname() << std::endl;
 }
 
@@ -265,8 +258,6 @@ std::string PostgreSQLCleint::getByName(std::string table_name, std::vector<std:
 			for (auto const& field : row) ss << field.c_str() << ";col;";
 			ss << ";spal;";
 		}
-		//std::cout << ss.str() << std::endl;
-		//txn.commit();
 		return ss.str();
 	}
 	catch (const std::exception&)

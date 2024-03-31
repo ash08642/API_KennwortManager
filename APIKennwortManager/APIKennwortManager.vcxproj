@@ -102,16 +102,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>OPENSSL_DLL;BSONCXX_DLL;MONGOCXX_DLL;ZLIB_DLL;OPENSSL_DLLOPENSSL_DLL_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENSSL_DLL;ZLIB_DLL;OPENSSL_DLLOPENSSL_DLL_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\libpqxx\include;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include\bsoncxx\v_noabi;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include\mongocxx\v_noabi;C:\Users\ahmad\Desktop\Dependencies\build\include;C:\Users\ahmad\Desktop\Dependencies\build\include\openssl;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows-static\include;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\libpqxx\include;C:\Users\ahmad\Desktop\Dependencies\build\include;C:\Users\ahmad\Desktop\Dependencies\build\include\openssl;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows-static\include;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\libpqxx\lib;C:\Program Files\PostgreSQL\16\lib;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\lib;C:\Users\ahmad\Desktop\Dependencies\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcrypto.lib;libssl.lib;bson-1.0.lib;bsoncxx.lib;mongoc-1.0.lib;mongocxx.lib;zlib.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcrypto.lib;libssl.lib;zlib.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -120,9 +120,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>OPENSSL_DLL;BSONCXX_DLL;MONGOCXX_DLL;ZLIB_DLL;OPENSSL_DLLOPENSSL_DLLNDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENSSL_DLL;ZLIB_DLL;OPENSSL_DLLOPENSSL_DLLNDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\libpqxx\include;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include\bsoncxx\v_noabi;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include\mongocxx\v_noabi;C:\Users\ahmad\Desktop\Dependencies\build\include;C:\Users\ahmad\Desktop\Dependencies\build\include\openssl;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows-static\include;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\libpqxx\include;C:\Users\ahmad\Desktop\Dependencies\build\include;C:\Users\ahmad\Desktop\Dependencies\build\include\openssl;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows-static\include;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -131,7 +131,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\libpqxx\lib;C:\Program Files\PostgreSQL\16\lib;C:\Users\ahmad\Desktop\Dependencies\vcpkg\installed\x64-windows\lib;C:\Users\ahmad\Desktop\Dependencies\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcrypto.lib;libssl.lib;bson-1.0.lib;bsoncxx.lib;mongoc-1.0.lib;mongocxx.lib;zlib.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcrypto.lib;libssl.lib;zlib.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
